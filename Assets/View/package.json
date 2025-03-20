@@ -1,7 +1,7 @@
 {
   "name": "com.darknaku.view",
   "displayName": "View",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "unity": "2022.3",
   "author": "DarkNaku",
   "description": "DarkNaku's View Package - This is a package that manages transitions between cameras within a scene.",

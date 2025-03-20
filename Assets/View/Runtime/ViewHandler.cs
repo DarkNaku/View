@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace DarkNaku.View {
     public abstract class ViewHandler<T> : MonoBehaviour, IViewHandler where T : ViewHandler<T> {
@@ -7,21 +8,25 @@ namespace DarkNaku.View {
 
         public string Name => gameObject.name;
         public Canvas ViewCanvas => _viewCanvas;
-        public CanvasGroup ViewCanvasGroup => _viewCanvasGroup;
-        public bool IsInTransition { get; protected set; }
-
-        private CanvasGroup _viewCanvasGroup = null;
-        private IViewTransition ViewTransition { get; set; }
-
-        public void Initialize() {
-            if (ViewCanvas != null) {
-                _viewCanvasGroup = ViewCanvas.GetComponent<CanvasGroup>();
-
-                if (_viewCanvasGroup == null) {
-                    _viewCanvasGroup = ViewCanvas.gameObject.AddComponent<CanvasGroup>();
+        
+        public bool Interactable {
+            get => ViewGraphicRaycaster != null && ViewGraphicRaycaster.enabled;
+            set {
+                if (ViewGraphicRaycaster != null) {
+                    ViewGraphicRaycaster.enabled = value;
                 }
             }
+        }
 
+        public bool IsInTransition { get; protected set; }
+
+        private IViewTransition ViewTransition { get; set; }
+
+        private GraphicRaycaster ViewGraphicRaycaster => _viewGraphicRaycaster ??= ViewCanvas?.GetComponent<GraphicRaycaster>();
+
+        private GraphicRaycaster _viewGraphicRaycaster;
+
+        public void Initialize() {
             ViewTransition = GetComponent<IViewTransition>();
 
             OnInitialize();
@@ -72,10 +77,7 @@ namespace DarkNaku.View {
 
             OnEnterAfter();
 
-            if (ViewCanvasGroup != null) {
-                ViewCanvasGroup.interactable = true;
-            }
-
+            Interactable = true;
             IsInTransition = false;
         }
 
@@ -86,10 +88,7 @@ namespace DarkNaku.View {
             }
 
             IsInTransition = true;
-
-            if (ViewCanvasGroup != null) {
-                ViewCanvasGroup.interactable = false;
-            }
+            Interactable = false;
 
             OnExitBefore();
 

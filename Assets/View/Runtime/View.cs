@@ -129,7 +129,7 @@ namespace DarkNaku.View {
                 return null;
             }
 
-            IViewHandler handler = _viewTable[viewName];
+            var handler = _viewTable[viewName];
 
             StartCoroutine(CoChange(handler));
 
@@ -144,6 +144,11 @@ namespace DarkNaku.View {
             }
 
             CurrentView = handler;
+
+            #if DARKNAKU_POPUP
+            Popup.MainCanvas = CurrentView.ViewCanvas;
+            #endif
+
             yield return CurrentView.Show();
         }
     }
