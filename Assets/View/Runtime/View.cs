@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+#if DARKNAKU_POPUP
+using DarkNaku.Popup;
+#endif
+
 #if UNITY_EDITOR
 using UnityEditor;
 using System.Reflection;
@@ -145,9 +149,9 @@ namespace DarkNaku.View {
 
             CurrentView = handler;
 
-            #if DARKNAKU_POPUP
+#if DARKNAKU_POPUP
             Popup.MainCanvas = CurrentView.ViewCanvas;
-            #endif
+#endif
 
             yield return CurrentView.Show();
         }
