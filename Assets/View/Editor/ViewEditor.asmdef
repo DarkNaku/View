@@ -1,18 +1,18 @@
 {
-    "name": "View",
+    "name": "ViewEditor",
     "rootNamespace": "",
     "references": [
-        "GUID:8cd8ac7fcbb31744aa5f7c92f1fd5c53"
+        "GUID:946dbea3896680541be142aa05beb27d"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": [
-        "DARKNAKU_VIEW"
-    ],
+    "defineConstraints": [],
     "versionDefines": [],
     "noEngineReferences": false
 }

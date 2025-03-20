@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.darknaku.popup": {
+      "version": "https://github.com/DarkNaku/Popup.git?path=/Assets/Popup",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "73d157db8a757eede144a335f59dc96eefcae321"
+    },
     "com.unity.collab-proxy": {
       "version": "2.7.1",
       "depth": 0,
