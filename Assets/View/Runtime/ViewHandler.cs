@@ -1,5 +1,7 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Pool;
 using UnityEngine.UI;
 
 namespace DarkNaku.View {
@@ -25,11 +27,18 @@ namespace DarkNaku.View {
         private GraphicRaycaster ViewGraphicRaycaster => _viewGraphicRaycaster ??= ViewCanvas?.GetComponent<GraphicRaycaster>();
 
         private GraphicRaycaster _viewGraphicRaycaster;
+        private List<ViewElement<T>> _viewElements;
 
         public void Initialize() {
             ViewTransition = GetComponent<IViewTransition>();
 
+            _viewElements = new List<ViewElement<T>>(GetComponents<ViewElement<T>>(true));
+
             OnInitialize();
+
+            for (int i = 0; i < _viewElements.Count; i++) {
+                _viewElements[i].Initialize(this as T);
+            }
 
             gameObject.SetActive(false);
         }
@@ -69,13 +78,13 @@ namespace DarkNaku.View {
 
             IsInTransition = true;
 
-            OnEnterBefore();
+            EnterBefore();
 
             if (ViewTransition != null) {
                 yield return StartCoroutine(ViewTransition.CoTransitionIn());
             }
 
-            OnEnterAfter();
+            EnterAfter();
 
             Interactable = true;
             IsInTransition = false;
@@ -90,15 +99,77 @@ namespace DarkNaku.View {
             IsInTransition = true;
             Interactable = false;
 
-            OnExitBefore();
+            ExitBefore();
 
             if (ViewTransition != null) {
                 yield return StartCoroutine(ViewTransition.CoTransitionOut());
             }
 
-            OnExitAfter();
+            ExitAfter();
 
             IsInTransition = false;
+        }
+
+        private void EnterBefore() {
+            OnEnterBefore();
+
+            for (int i = 0; i < _viewElements.Count; i++) {
+                _viewElements[i].EnterBefore();
+            }
+        }
+
+        private void EnterAfter() {
+            OnEnterAfter();
+
+            for (int i = 0; i < _viewElements.Count; i++) {
+                _viewElements[i].EnterAfter();
+            }
+        }
+
+        private void ExitBefore() {
+            OnExitBefore();
+
+            for (int i = 0; i < _viewElements.Count; i++) {
+                _viewElements[i].ExitBefore();
+            }
+        }
+
+        private void ExitAfter() {
+            OnExitAfter();
+
+            for (int i = 0; i < _viewElements.Count; i++) {
+                _viewElements[i].ExitAfter();
+            }
+        }
+
+        private U[] GetComponents<U>(bool recusively = false) {
+            var queue = new Queue<Transform>();
+            var components = ListPool<U>.Get();
+
+            for (int i = 0; i < transform.childCount; i++) {
+                queue.Enqueue(transform.GetChild(i));
+            }
+
+            while (queue.Count > 0) {
+                var child = queue.Dequeue();
+                var component = child.GetComponent<U>();
+
+                if (component != null) {
+                    components.Add(component);
+                }
+
+                if (recusively) {
+                    for (int j = 0; j < child.childCount; j++) {
+                        queue.Enqueue(child.GetChild(j));
+                    }
+                }
+            }
+
+            var result = components.ToArray();
+
+            ListPool<U>.Release(components);
+
+            return result;
         }
     }
 }
