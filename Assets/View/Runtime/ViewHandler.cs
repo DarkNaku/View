@@ -28,8 +28,12 @@ namespace DarkNaku.View {
 
         private GraphicRaycaster _viewGraphicRaycaster;
         private List<ViewElement<T>> _viewElements;
+        private bool _isInitialized;
+        private bool _isReleased;
 
         public void Initialize() {
+            if (_isInitialized) return;
+
             ViewTransition = GetComponent<IViewTransition>();
 
             _viewElements = new List<ViewElement<T>>(GetComponents<ViewElement<T>>(true));
@@ -41,6 +45,24 @@ namespace DarkNaku.View {
             }
 
             gameObject.SetActive(false);
+            
+            _isInitialized = true;
+        }
+
+        public void Release() {
+            if (_isReleased) return;
+
+            for (int i = 0; i < _viewElements.Count; i++) {
+                if (_viewElements[i] != null && !ReferenceEquals(_viewElements[i], null)) {
+                    _viewElements[i].Release();
+                }
+            }
+
+            _viewElements.Clear();
+
+            OnRelease();
+
+            _isReleased = true;
         }
 
         public IEnumerator Show() {
@@ -58,6 +80,9 @@ namespace DarkNaku.View {
         protected virtual void OnInitialize() {
         }
 
+        protected virtual void OnRelease() {
+        }
+
         protected virtual void OnEnterBefore() {
         }
 
@@ -68,6 +93,10 @@ namespace DarkNaku.View {
         }
 
         protected virtual void OnExitAfter() {
+        }
+
+        private void OnDestroy() {
+            Release();
         }
 
         private IEnumerator CoShow() {

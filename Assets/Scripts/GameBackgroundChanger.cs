@@ -11,6 +11,10 @@ public class GameBackgroundChanger : ViewElement<GameViewHandler> {
         Debug.Log($"[GameBackgroundChanger] OnInitialize - {name}");
     }
 
+    protected override void OnRelease() {
+        Debug.Log($"[GameBackgroundChanger] OnRelease - {name}");
+    }
+
     protected override void OnEnterBefore() {
         Debug.Log($"[GameBackgroundChanger] OnEnterBefore - {name}");
 

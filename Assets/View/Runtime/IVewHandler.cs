@@ -10,6 +10,7 @@ namespace DarkNaku.View
         bool IsInTransition { get; }
 
         void Initialize();
+        void Release();
         IEnumerator Show();
         IEnumerator Hide();
     }

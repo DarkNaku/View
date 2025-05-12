@@ -41,6 +41,9 @@ namespace DarkNaku.View {
         private static readonly object _lock = new();
         private static View _instance;
 
+        private bool _isInitialized;
+        private bool _isReleased;
+
         public static IViewHandler Change(string viewName) {
             return Instance._Change<IViewHandler>(viewName);
         }
@@ -52,12 +55,12 @@ namespace DarkNaku.View {
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void OnBeforeSceneLoad() {
             _instance = null;
-            Debug.Log("[View] OnBeforeSceneLoad");
+            // Debug.Log("[View] OnBeforeSceneLoad");
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void OnAfterSceneLoad() {
-            Debug.Log("[View] OnAfterSceneLoad");
+            // Debug.Log("[View] OnAfterSceneLoad");
         }
 
         private void Awake() {
@@ -73,12 +76,16 @@ namespace DarkNaku.View {
         private void OnDestroy() {
             if (_instance != this) return;
 
+            Release();
+
             _instance = null;
 
-            Debug.Log($"[View] Destroyed.");
+            Debug.Log("[View] Destroyed.");
         }
 
         private void Initialize() {
+            if (_isInitialized) return;
+
             _viewTable = new Dictionary<string, IViewHandler>();
 
             for (int i = 0; i < transform.childCount; i++) {
@@ -90,7 +97,21 @@ namespace DarkNaku.View {
                 }
             }
 
-            name = "[Singleton] View";
+            _isInitialized = true;
+
+            Debug.Log("[View] Initialized.");
+        }
+
+        private void Release() {
+            if (_isReleased) return;
+
+            foreach (var view in _viewTable.Values) {
+                if (view != null && !ReferenceEquals(view, null)) {
+                    view.Release();
+                }
+            }
+
+            _isReleased = true;
         }
 
         private T _Change<T>(string viewName) where T : class, IViewHandler {

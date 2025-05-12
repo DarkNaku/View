@@ -11,6 +11,10 @@ public class MainBackgroundChanger : ViewElement<MainViewHandler> {
         Debug.Log($"[MainBackgroundChanger] OnInitialize - {name}");
     }
 
+    protected override void OnRelease() {
+        Debug.Log($"[MainBackgroundChanger] OnRelease - {name}");
+    }
+
     protected override void OnEnterBefore() {
         Debug.Log($"[MainBackgroundChanger] OnEnterBefore - {name}");
 

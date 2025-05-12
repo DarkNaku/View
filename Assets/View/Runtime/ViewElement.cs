@@ -7,10 +7,23 @@ namespace DarkNaku.View {
 
         protected T Handler { get; private set; }
 
+        private bool _isInitialized;
+        private bool _isReleased;
+
         public void Initialize(T handler) {
+            if (_isInitialized) return;
+
             Handler = handler;
 
             OnInitialize();
+        }
+
+        public void Release() {
+            if (_isReleased) return;
+
+            OnRelease();
+
+            _isReleased = true;
         }
 
         public void EnterBefore() {
@@ -32,6 +45,9 @@ namespace DarkNaku.View {
         protected virtual void OnInitialize() {
         }
 
+        protected virtual void OnRelease() {
+        }
+
         protected virtual void OnEnterBefore() {
         }
 
@@ -42,6 +58,10 @@ namespace DarkNaku.View {
         }
 
         protected virtual void OnExitAfter() {
+        }
+
+        private void OnDestroy() {
+            Release();
         }
     }
 }
