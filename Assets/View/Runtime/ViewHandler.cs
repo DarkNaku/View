@@ -181,10 +181,10 @@ namespace DarkNaku.View {
 
             while (queue.Count > 0) {
                 var child = queue.Dequeue();
-                var component = child.GetComponent<U>();
+                var childComponents = child.GetComponents<U>();
 
-                if (component != null) {
-                    components.Add(component);
+                if (components != null) {
+                    components.AddRange(childComponents);
                 }
 
                 if (recusively) {
