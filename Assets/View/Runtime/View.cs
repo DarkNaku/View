@@ -43,6 +43,7 @@ namespace DarkNaku.View {
 
         private bool _isInitialized;
         private bool _isReleased;
+        private float _escapePressedTime;
 
         public static IViewHandler Change(string viewName) {
             return Instance._Change<IViewHandler>(viewName);
@@ -71,6 +72,23 @@ namespace DarkNaku.View {
                 Debug.LogWarning($"[View] Duplicated - {name}");
                 Destroy(gameObject);
             }
+        }
+        
+        private void Update() {
+            if (Input.GetKeyUp(KeyCode.Escape)) Escape();
+        }
+
+        private void Escape() {
+            if (CurrentView == null) return;
+            if (CurrentView.IsInTransition) return;
+            if (Time.realtimeSinceStartup - _escapePressedTime < 1f) return;
+#if DARKNAKU_POPUP
+            if (Popup.Popup.IsAnyPopupShow) return;
+#endif
+
+            CurrentView.OnEscape();
+
+            _escapePressedTime = Time.realtimeSinceStartup;
         }
 
         private void OnDestroy() {

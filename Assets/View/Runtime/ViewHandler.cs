@@ -77,6 +77,9 @@ namespace DarkNaku.View {
             gameObject.SetActive(false);
         }
 
+        public void OnEscape() {
+        }
+
         protected virtual void OnInitialize() {
         }
 
@@ -94,7 +97,7 @@ namespace DarkNaku.View {
 
         protected virtual void OnExitAfter() {
         }
-
+        
         private void OnDestroy() {
             Release();
         }

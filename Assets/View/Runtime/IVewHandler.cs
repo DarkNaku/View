@@ -13,5 +13,6 @@ namespace DarkNaku.View
         void Release();
         IEnumerator Show();
         IEnumerator Hide();
+        void OnEscape();
     }
 }
